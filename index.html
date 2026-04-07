@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Loodos E-posta İmzası</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 36px;
+      max-width: 560px;
+      width: 100%;
+    }
+
+    .logo-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .logo-header img { height: 22px; }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 400;
+      color: #111;
+      padding-left: 16px;
+      border-left: 2px solid #e0e0e0;
+    }
+
+    .fields {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #111;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus { border-color: #28b5b4; }
+
+    .preview-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .preview-box {
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      background: #fafafa;
+    }
+
+    .copy-btn {
+      width: 100%;
+      padding: 14px;
+      background: #28b5b4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+
+    .copy-btn:hover { background: #1f9d9c; }
+
+    .copy-btn.success { background: #2ecc71; }
+
+    .tip {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #999;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    /* İMZA STİLLERİ */
+    #signature-render {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="logo-header">
+    <img src="https://loodos.com/email-signature/v2025.07/loodos-type.gif" alt="loodos">
+    <h1>E-posta İmza Oluşturucu</h1>
+  </div>
+
+  <div class="fields">
+    <div>
+      <label>Ad Soyad</label>
+      <input type="text" id="name" placeholder="Adınızı ve soyadınızı giriniz" oninput="updateSignature()">
+    </div>
+    <div>
+      <label>Bölüm (İlk Harfler Büyük)</label>
+      <input type="text" id="title" placeholder="Bölümünüzü giriniz" oninput="updateSignature()">
+    </div>
+    <div>
+      <label>Cep Telefonu</label>
+      <input type="text" id="mobile" placeholder="Telefon numaranızı giriniz" oninput="updateSignature()">
+    </div>
+  </div>
+
+  <div class="preview-label">Önizleme</div>
+
+  <div class="preview-box">
+    <div id="signature-render"></div>
+  </div>
+
+  <button class="copy-btn" onclick="copySignature()">📋 İmzayı Kopyala</button>
+
+  <p class="tip">
+    Kopyaladıktan sonra:<br>
+    Gmail → ⚙️ → See all settings → General → Signature → Yapıştır (Cmd+V) → Save Changes
+  </p>
+
+</div>
+
+<script>
+  function getSignatureHTML(name, title, mobile) {
+    return `<table cellpadding="0" cellspacing="0" style="color:rgb(34,34,34);direction:ltr;border-collapse:collapse;border-spacing:0px"><tbody><tr><td style="direction:ltr"><table cellpadding="0" cellspacing="0" style="direction:ltr;width:345px;border-collapse:collapse;border-spacing:0px"><tbody><tr><td style="direction:ltr;width:20px"><img width="20" alt="Profile Icon" src="https://loodos.com/email-signature/v2025.07/loodos-3D-Sign.gif" style="width:20px;margin:0px"></td><td style="direction:ltr;width:9px"></td><td style="direction:ltr"><div style="direction:ltr;margin:0px;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,'Helvetica Neue',sans-serif;font-size:16px;font-weight:700;color:rgb(0,0,0)">${name}</div><div style="direction:ltr;margin:0px;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,'Helvetica Neue',sans-serif;font-size:13px;color:rgb(40,181,180)">${title}</div></td><td style="direction:ltr;width:9px"></td><td style="direction:ltr;width:1px"><img width="1" alt="Divider" src="https://loodos.com/email-signature/v2025.07/divider.gif" style="width:1px;margin:0px"></td><td style="direction:ltr;width:9px"></td><td style="direction:ltr"><div style="direction:ltr;margin:0px;font-family:'Red Hat Display',Arial,sans-serif;font-size:10px;color:rgb(85,85,85)">Pioneering Technology,<br>Perfecting the Art of Experience</div></td></tr></tbody></table></td></tr><tr><td style="direction:ltr"></td></tr><tr><td style="direction:ltr;padding-left:28px;color:rgb(51,51,51)"><div style="direction:ltr;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,'Helvetica Neue',sans-serif;font-size:12px"><b>m.</b>&nbsp;${mobile}<br><b>o.</b>&nbsp;+90 212 217 22 30<br><b>addr.</b>&nbsp;Maslak Mah. Büyükdere Cad. Noramin<br>İş Merkezi No:237/1 B-5 Sarıyer, İstanbul</div></td></tr><tr><td style="direction:ltr"></td></tr><tr><td style="direction:ltr;padding-left:28px"><table cellpadding="0" cellspacing="0" style="direction:ltr;width:317px;border-collapse:collapse;border-spacing:0px"><tbody><tr><td align="left" style="direction:ltr;width:61px"><a href="https://www.loodos.com/" target="_blank" style="margin:0px"><img width="61" alt="Loodos Logo" src="https://loodos.com/email-signature/v2025.07/loodos-type.gif" style="width:61px;margin:0px"></a></td><td align="right" style="direction:ltr"><table cellpadding="0" cellspacing="0" style="direction:ltr;border-collapse:collapse;border-spacing:0px"><tbody><tr><td style="direction:ltr"><a href="https://www.linkedin.com/company/loodos/" target="_blank" style="margin:0px"><img width="18" alt="LinkedIn" src="https://loodos.com/email-signature/v2025.07/linkedin.gif" style="width:18px;margin:0px"></a></td><td style="direction:ltr;width:10px"></td><td style="direction:ltr"><a href="https://x.com/Loodos" target="_blank" style="margin:0px"><img width="18" alt="X (Twitter)" src="https://loodos.com/email-signature/v2025.07/x.gif" style="width:18px;margin:0px"></a></td><td style="direction:ltr;width:10px"></td><td style="direction:ltr"><a href="https://www.instagram.com/loodostech/" target="_blank" style="margin:0px"><img width="18" alt="Instagram" src="https://loodos.com/email-signature/v2025.07/instagram.gif" style="width:18px;margin:0px"></a></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>`;
+  }
+
+  function updateSignature() {
+    const name = document.getElementById('name').value || 'Ad Soyad';
+    const title = document.getElementById('title').value || 'Bölüm (İlk harfler büyük)';
+    const mobile = document.getElementById('mobile').value || '+90 544 444 44 44';
+    document.getElementById('signature-render').innerHTML = getSignatureHTML(name, title, mobile);
+  }
+
+  async function copySignature() {
+    const name = document.getElementById('name').value || 'Ad Soyad';
+    const title = document.getElementById('title').value || 'Bölüm (İlk harfler büyük)';
+    const mobile = document.getElementById('mobile').value || '+90 544 444 44 44';
+
+    const html = getSignatureHTML(name, title, mobile);
+
+    try {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': new Blob([html], { type: 'text/html' }),
+          'text/plain': new Blob([name], { type: 'text/plain' })
+        })
+      ]);
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✅ Kopyalandı! Gmail\'e yapıştırabilirsiniz.';
+      btn.classList.add('success');
+      setTimeout(() => {
+        btn.textContent = '📋 İmzayı Kopyala';
+        btn.classList.remove('success');
+      }, 3000);
+    } catch (e) {
+      alert('Kopyalanamadı. Lütfen sayfayı Chrome\'da açın.');
+    }
+  }
+
+  // Sayfa yüklenince önizlemeyi göster
+  updateSignature();
+</script>
+</body>
+</html>
